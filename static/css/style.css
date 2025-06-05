@@ -1,4 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* Importando la font montserrat que quiero */
+/* Definimos :root que basically va a ser una variable para ciertos estilos que quiero */
+:root{
+  --base-clr: #f1cccc;
+  --line-clr: #6e2d2d;
+  --hover-clr: aqua;
+  --text-clr: black;
+  --accent-clr: #5e63ff;
+  --secondary-text-clr: #494444;
+}
 /*estes es para ajustar margin y padding en toda la app*/
-body{
+*{
     margin: 0px;
+    padding: 0px;
 }

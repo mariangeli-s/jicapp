@@ -1,3 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* Importando la font montserrat que quiero */
+/* Definimos :root que basically va a ser una variable para ciertos estilos que quiero */
+:root{
+  --base-clr: #f1cccc;
+  --line-clr: #6e2d2d;
+  --hover-clr: aqua;
+  --text-clr: black;
+  --accent-clr: #5e63ff;
+  --secondary-text-clr: #494444;
+}
+/*estes es para ajustar margin y padding en toda la app*/
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html{
+  font-family: "Montserrat", sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: var(--base-clr);
+    color: var(--text-clr);
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+#sidebar{
+    box-sizing: border-box;
+    height: 100vh;
+    width: 300px;
+    padding: 5px 1em;
+    background-color: var(--base-clr);
+    border-right: 1px solid var(--line-clr);
+
+    position: sticky;
+    top: 0;
+    align-self: start;
+}
+
+#sidebar ul{
+    list-style: none;
+}
+
+#sidebar > ul > li:first-child{
+    display: flexbox;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+#sidebar ul li.active a{
+    color: var(--accent-clr);
+}
+
+#sidebar ul li a img{
+    height: 100px;
+}
+
+#sidebar a{
+    border-radius: .5em;
+    padding: .85em;
+    text-decoration: none;
+    color: var(--text-clr);
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+#sidebar a:hover{
+    background-color: var(--hover-clr);
+}
+
+#toggle-btn{
+    margin-left: auto;
+    padding: 1em;
+    border: none;
+    border-radius: .5em;
+    background-color: none;
+    cursor: pointer;
+}
+
 main{
     width: 100%;
     height: 100%;
@@ -24,9 +108,6 @@ main{
   width: 100%;
 }
 
-#leccion1 img{
-    height:120px;
-}
 
 #texto_derecha h1,h2{
     border: 0px;

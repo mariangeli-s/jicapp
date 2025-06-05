@@ -3,30 +3,49 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/leccion.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/leccion.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/leccion.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
     <title>Lecciones</title>
 </head>
 <body>
+    <nav id="sidebar"><!-- esta clase para alinearlo centro vertical y como el 20% de la pagina sidebar -->
+        <ul>
+            <li>
+                <button id="toggle-btn">
+                    <img src="/static/img/left_panel_close.png">
+                    <!-- LAS FLECHAS PARA COMPRIMIR EL SIDEBAR-->
+                </button>
+            </li>
+            <li class="active">
+                <a href="index.html">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="lecciones.html">
+                    <!-- <img src="{{ url_for ('static', filename='img/leccion1.png') }}">-->
+                    <img src="/static/img/leccion1.png">
+                    <div>
+                        <span>Lección 1</span>
+                        <h2>Relación Social</h2>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="lecciones.html">
+                    <span>Lección 2</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     <main>
-        <div class="row1"><!-- esta clase para alinearlo centro vertical y como el 20% de la pagina -->
-            <div id="leccion1">
-                <img src="{{ url_for ('static', filename='img/leccion1.png') }}">
-                <div id="texto_derecha">
-                    <h2>Lección 1</h2>
-                    <h1>Vida Cotidiana</h1>
-                </div>
-            </div>
-            <!--<div id="leccion2">
-                <img>
-                <h1></h1>
-            </div>-->
-        </div>
         <div class="row2"><!-- esta clase para alinearlo centro vertical y como el 70% de la pagina -->
             <div class="container-leccion">
                 <h1>Titulo leccion</h1>
                 <p>descripcion de la leccion</p>
-                <img src="{{ url_for('video_feed') }}" alt="Video Feed de la Cámara" width="400" height="280">
+                <!-- <img src="{{ url_for('video_feed') }}" alt="Video Feed de la Cámara" width="400" height="280"> -->
                 <button>Comenzar</button><!-- boton no va siempre, puede que sea mas extenso es la introduccion de la leccion-->
                 <!-- menu desplegable-->
             </div>    
