@@ -39,6 +39,13 @@ body{
     position: sticky;
     top: 0;
     align-self: start;
+    transition: 300ms ease-in-out;
+    overflow: hidden;
+}
+
+#sidebar.close{
+    padding: 5px;
+    width: 100px;
 }
 
 #sidebar ul{
@@ -56,16 +63,17 @@ body{
 }
 
 #sidebar ul li a img{
-    height: 100px;
+    height: 70px;
 }
 
 #sidebar a{
     border-radius: .5em;
-    padding: .85em;
+    padding: .5em;
     text-decoration: none;
     color: var(--text-clr);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1em;
 }
 
@@ -73,13 +81,25 @@ body{
     background-color: var(--hover-clr);
 }
 
+.rotate img{
+    transform: rotate(180deg);
+}
+
 #toggle-btn{
     margin-left: auto;
-    padding: 1em;
+    padding: 2px;
     border: none;
     border-radius: .5em;
-    background-color: none;
+    background-color: var(--base-clr);
     cursor: pointer;
+}
+
+#toggle-btn img{
+    transition: rotate 150ms ease;
+}
+
+#toggle-btn:hover {
+    background-color: var(--hover-clr);
 }
 
 main{
@@ -120,5 +140,5 @@ main{
     align-content: start;
     text-align: center;
     padding: 10px;
-    background-color: #883cbb; /* opcional, para distinguir */
+    background-color: #ccb3dd; /* opcional, para distinguir */
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/leccion.css">
     <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src="/static/js/script.js" defer></script>
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/leccion.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
     <title>Lecciones</title>
@@ -13,17 +14,17 @@
     <nav id="sidebar"><!-- esta clase para alinearlo centro vertical y como el 20% de la pagina sidebar -->
         <ul>
             <li>
-                <button id="toggle-btn">
-                    <img src="/static/img/left_panel_close.png">
+                <button onclick=toggleSidebar() id="toggle-btn">
+                    <img src="/static/img/keyboard_double_arrow_left.png">
                     <!-- LAS FLECHAS PARA COMPRIMIR EL SIDEBAR-->
                 </button>
             </li>
-            <li class="active">
+            <li>
                 <a href="index.html">
                     <span>Home</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="lecciones.html">
                     <!-- <img src="{{ url_for ('static', filename='img/leccion1.png') }}">-->
                     <img src="/static/img/leccion1.png">
@@ -43,8 +44,12 @@
     <main>
         <div class="row2"><!-- esta clase para alinearlo centro vertical y como el 70% de la pagina -->
             <div class="container-leccion">
-                <h1>Titulo leccion</h1>
-                <p>descripcion de la leccion</p>
+                <h1>Relación Social</h1>
+                <p>En esta lección aprenderás algunas señas básicas y esenciales para saludar y relacionarte<br>
+                    con los demás en Lengua de Señas Panameñas. Practicaremos expresiones como<br>
+                    Hola, ¿Cómo estás?, Gracias, Bien y Lo siento, que te ayudarán a iniciar conversaciones<br>
+                    con respeto y amabilidad.
+                </p>
                 <!-- <img src="{{ url_for('video_feed') }}" alt="Video Feed de la Cámara" width="400" height="280"> -->
                 <button>Comenzar</button><!-- boton no va siempre, puede que sea mas extenso es la introduccion de la leccion-->
                 <!-- menu desplegable-->
