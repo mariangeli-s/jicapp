@@ -2,12 +2,13 @@
 /* Importando la font montserrat que quiero */
 /* Definimos :root que basically va a ser una variable para ciertos estilos que quiero */
 :root{
-  --base-clr: #f1cccc;
-  --line-clr: #6e2d2d;
-  --hover-clr: aqua;
-  --text-clr: black;
-  --accent-clr: #5e63ff;
-  --secondary-text-clr: #494444;
+  --base-clr: #1a3e5d;
+  --lesson-clr: #ffffff;
+  --line-clr: #275a86;
+  --hover-clr: #275a8665;
+  --text-clr: #1a3e5d;
+  --accent-clr: #88afd2;
+  --secondary-text-clr: #ffffff;
 }
 /*estes es para ajustar margin y padding en toda la app*/
 *{
@@ -28,14 +29,47 @@ body{
     grid-template-columns: auto 1fr;
 }
 
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 60px;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000; /* para que esté encima del contenido */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-left {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--text-clr);
+}
+
+.header-right a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: var(--text-clr);
+    font-weight: 500;
+}
+
+.header-right a:hover {
+    color: var(--hover-clr);
+}
+
 #sidebar{
     box-sizing: border-box;
     height: 100vh;
     width: 300px;
     padding: 5px 1em;
     background-color: var(--base-clr);
-    border-right: 1px solid var(--line-clr);
-
+    border-right: 2px solid var(--line-clr);
+    padding-top: 70px;
     position: sticky;
     top: 0;
     align-self: start;
@@ -70,7 +104,7 @@ body{
     border-radius: .5em;
     padding: .5em;
     text-decoration: none;
-    color: var(--text-clr);
+    color: var(--secondary-text-clr);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -105,6 +139,7 @@ body{
 main{
     width: 100%;
     height: 100%;
+    padding-top: 60px;
     display: flex;
     gap: 20px;
 }
@@ -115,8 +150,7 @@ main{
   display: flex;             /* para alinear elementos */
   align-items: start;       /* centra verticalmente */
   justify-content: flex-start; /* alinea a la izquierda */
-  padding: 10px;
-  background-color: #bb3c3c; /* opcional, para distinguir */
+  padding: 10px; 
 }
 
 /* Estilo para el contenedor con id leccion1 */
@@ -136,9 +170,43 @@ main{
 
 .row2{
     width: 100%;
-    height: 100vh;
+    height: 100%;
     align-content: start;
     text-align: center;
     padding: 10px;
-    background-color: #ccb3dd; /* opcional, para distinguir */
+    background-color: var(--lesson-clr); /* opcional, para distinguir */
+}
+
+.container-video-cam{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;  /* centra horizontalmente */
+    align-items: center;      /* centra verticalmente */
+    gap: 20px;
+    text-align: center;
+    height: 100%; 
+}
+
+#show-vid video{
+    border-radius: 1rem;         /* bordes redondeados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* sombra suave y elegante */
+    height: auto;
+}
+
+
+#show-cam img{
+    border-radius: 1rem;         /* bordes redondeados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* sombra suave y elegante */            
+}
+
+#boton-next{
+    margin-top: 20px;
+    border-radius: 20px;
+    color: var(--secondary-text-clr);
+    background-color: var(--base-clr);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    padding: 10px;
+    border: none;
+    justify-content: flex-start;
 }
