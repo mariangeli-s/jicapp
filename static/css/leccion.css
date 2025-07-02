@@ -7,7 +7,7 @@
   --line-clr: #275a86;
   --hover-clr: #275a8665;
   --text-clr: #1a3e5d;
-  --accent-clr: #88afd2;
+  --accent-clr: #00a2ff;
   --secondary-text-clr: #ffffff;
 }
 /*estes es para ajustar margin y padding en toda la app*/
@@ -43,6 +43,7 @@ body{
     padding: 0 2rem;
     z-index: 1000; /* para que esté encima del contenido */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 }
 
 .header-left {
@@ -62,78 +63,129 @@ body{
     color: var(--hover-clr);
 }
 
-#sidebar{
+/* CONTENEDOR PRINCIPAL (sidebar + content-area) */
+.main-container {
+    display: flex;
+    flex: 1;
+    margin-top: 60px; /* Espacio para el header fijo */
+    min-height: calc(100vh - 60px); /* Asegura que el contenedor ocupe el resto de la altura */
+}
+
+/* SIDEBAR */
+#sidebar {
     box-sizing: border-box;
-    height: 100vh;
+    height: calc(100vh - 60px); /* Ocupa el resto de la altura de la ventana */
     width: 300px;
     padding: 5px 1em;
     background-color: var(--base-clr);
     border-right: 2px solid var(--line-clr);
-    padding-top: 70px;
+    padding-top: 20px; /* Ajustado para el contenido interno */
     position: sticky;
-    top: 0;
-    align-self: start;
-    transition: 300ms ease-in-out;
-    overflow: hidden;
+    top: 60px; /* Se pega justo debajo del header fijo */
+    align-self: flex-start; /* Asegura que se alinee al inicio del contenedor flex */
+    transition: width 300ms ease-in-out, padding 300ms ease-in-out;
+    overflow-y: auto; /* Permite scroll vertical si el contenido es muy largo */
+    flex-shrink: 0; /* Evita que el sidebar se encoja */
 }
 
-#sidebar.close{
+/* Estado colapsado del sidebar */
+#sidebar.close {
     padding: 5px;
-    width: 100px;
+    width: 100px; /* Ancho cuando está colapsado */
 }
 
-#sidebar ul{
-    list-style: none;
-}
-
-#sidebar > ul > li:first-child{
-    display: flexbox;
-    justify-content: flex-end;
+/* Estilos para el encabezado del sidebar (flecha y título) */
+#sidebar .sidebar-header-row {
+    display: flex;
+    justify-content: space-between; /* Pone el título a la izquierda y la flecha a la derecha */
+    align-items: center;
     margin-bottom: 16px;
+    padding-right: 1em; /* Espaciado a la derecha */
 }
 
-#sidebar ul li.active a{
+#sidebar .sidebar-header-title {
+    margin: 0; /* Elimina márgenes por defecto del h2 */
+    white-space: nowrap; /* Evita que el texto se rompa */
+    transition: opacity 300ms ease-in-out; /* Transición para la visibilidad */
+    font-size: 1.2rem; /* Tamaño de fuente para el título */
+    color: #fff; /* Color blanco para asegurar visibilidad */
+    flex-grow: 1; /* Permite que el título crezca y ocupe el espacio disponible */
+}
+
+/* Ocultar el título "LECCIONES" cuando el sidebar está colapsado */
+#sidebar.close .sidebar-header-title {
+    opacity: 0;
+    pointer-events: none; /* Deshabilita interacciones cuando está oculto */
+}
+
+/* Estilos para el botón de alternar (flechas) */
+#toggle-btn {
+    padding: 2px;
+    border: none;
+    border-radius: .5em;
+    background-color: var(--base-clr);
+    cursor: pointer;
+    flex-shrink: 0; /* Asegura que el botón no se encoja */
+}
+
+#toggle-btn img {
+    transition: rotate 150ms ease;
+    width: 24px; /* Ajusta el tamaño de la imagen de la flecha */
+    height: 24px;
+}
+
+#toggle-btn:hover {
+    background-color: var(--hover-clr);
+}
+
+.rotate img {
+    transform: rotate(180deg);
+}
+
+/* Estilos para los elementos de la lista del sidebar */
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li.active a {
     color: var(--accent-clr);
 }
 
-#sidebar ul li a img{
-    height: 70px;
+#sidebar ul li a img {
+    height: 60px; /* Ajustado el tamaño de la imagen de la lección */
+    width: 60px;
+    flex-shrink: 0; /* Asegura que la imagen no se encoja */
 }
 
-#sidebar a{
+#sidebar a {
     border-radius: .5em;
     padding: .5em;
     text-decoration: none;
     color: var(--secondary-text-clr);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1em;
+    gap: 1em; /* Espacio entre la imagen y el texto */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-#sidebar a:hover{
+#sidebar a:hover {
     background-color: var(--hover-clr);
 }
 
-.rotate img{
-    transform: rotate(180deg);
+/* Ocultar el texto de los enlaces de lección cuando el sidebar está colapsado */
+#sidebar.close ul li a span,
+#sidebar.close ul li a h2.sidebar-link-title { /* Asegúrate de que todos los textos se oculten */
+    opacity: 0;
+    pointer-events: none;
+    width: 0; /* Colapsa el ancho para que el texto no ocupe espacio */
+    overflow: hidden; /* Oculta el texto que se desborda */
+    transition: opacity 300ms ease-in-out, width 300ms ease-in-out;
 }
 
-#toggle-btn{
-    margin-left: auto;
-    padding: 2px;
-    border: none;
-    border-radius: .5em;
-    background-color: var(--base-clr);
-    cursor: pointer;
-}
-
-#toggle-btn img{
-    transition: rotate 150ms ease;
-}
-
-#toggle-btn:hover {
-    background-color: var(--hover-clr);
+#sidebar.close ul li a img {
+    margin: 0 auto; /* Centra la imagen cuando el texto está oculto */
 }
 
 main{
@@ -183,7 +235,7 @@ main{
     justify-content: center;  /* centra horizontalmente */
     align-items: center;      /* centra verticalmente */
     gap: 20px;
-    text-align: center;
+    text-align: left;
     height: 100%; 
 }
 
@@ -196,7 +248,7 @@ main{
 
 #show-cam img{
     border-radius: 1rem;         /* bordes redondeados */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* sombra suave y elegante */            
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* sombra suave y elegante */        
 }
 
 #boton-next{
@@ -208,5 +260,5 @@ main{
     font-weight: 600;
     padding: 10px;
     border: none;
-    justify-content: flex-start;
+    margin-left: 800px;
 }
