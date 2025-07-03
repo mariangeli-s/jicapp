@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css/leccion.css">
+    <!-- <link rel="stylesheet" href="/static/css/leccion.css">
     <link rel="stylesheet" href="/static/css/style.css">
-    <script type="text/javascript" src="/static/js/script.js" defer></script>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/leccion.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <script type="text/javascript" src="/static/js/script.js" defer></script>-->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leccion.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Lecciones</title>
 </head>
 <body>
@@ -27,12 +28,12 @@
                 <li class="sidebar-header-row">
                     <h2 class="sidebar-header-title">LECCIONES</h2>
                     <button onclick="toggleSidebar()" id="toggle-btn">
-                        <img src="/static/img/cerrar_blanco.png" alt="Toggle Sidebar">
+                        <img src="{{ url_for('static', filename='img/cerrar_blanco.png') }}" alt="Toggle Sidebar">
                     </button>
                 </li>
                 <li class="active">
-                    <a href="lecciones.html">
-                        <img src="/static/img/leccion1.png" alt="Lección 1">
+                    <a href="{{ url_for('index') }}">
+                        <img src="{{ url_for('static', filename='img/leccion1.png') }}" alt="Lección 1">
                         <div>
                             <span>Lección 1</span>
                             <h2 class="sidebar-link-title">Relación Social</h2>
@@ -62,14 +63,15 @@
             <div class="container-video-cam">
                 <div id="show-vid">
                     <h3>Vídeo de referencia:</h3>
-                    <video controls loop src="/static/videos/Hola.mp4" width="400" height="280"></video>
-                    <p>Vídeo disponible en<br>
-                        <a href="https://www.youtube.com/watch?v=_3MkbS1hddc&t=118s">https://www.youtube.com/watch?v=_3MkbS1hddc&t=118s</a>
-                    </p>
+                    <video controls loop width="400" height="280">
+                        <source src="{{ url_for('static', filename='videos/Hola.mp4') }}" type="video/mp4">
+                        Tu navegador no soporta este video.
+                    </video>
+                    <p>Vídeo disponible en: <a href="https://youtu.be/_3MkbS1hddc?t=118" target="_blank">https://youtu.be/_3MkbS1hddc?t=118</a></p>
                 </div>
                 <div id="show-cam">
-                    <img src="/static/img/leccion1.png" width="400" height="280">
-                    <!-- <img src="{{ url_for('video_feed') }}" alt="Video Feed de la Cámara" width="400" height="280"> -->
+                    <!-- <<img src="/static/img/leccion1.png" width="400" height="280"> -->
+                    <img src="{{ url_for('video_feed') }}" alt="Video Feed de la Cámara" width="400" height="280">
                 </div>
                 </div>
                     <button id="boton-next">Siguiente</button><!-- boton no va siempre, puede que sea mas extenso es la introduccion de la leccion-->
