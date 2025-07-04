@@ -27,7 +27,7 @@ actions = np.array(['Hola', 'Gracias', 'Comprendo', 'Como estas','De nada'])
 
 # Umbral de confianza para dar feedback positivo al usuario
 # Si la probabilidad de la predicción es mayor o igual a este valor, se considera "bien hecha".
-CONFIDENCE_THRESHOLD = 0.9 # Puedes ajustar este valor según el rendimiento de tu modelo
+#CONFIDENCE_THRESHOLD = 0.9 # Puedes ajustar este valor según el rendimiento de tu modelo
 
 # --- CARGAR EL MODELO ENTRENADO ---
 model = None # Inicializa la variable del modelo como None
@@ -59,7 +59,7 @@ def generate_frames():
         sequence = [] # Lista para almacenar los keypoints de los últimos 30 frames
         sentence = [] # Lista para almacenar las predicciones de señas confirmadas (la "oración")
         predictions = [] # Lista para almacenar las últimas predicciones crudas del modelo
-        threshold_prediction_consistency = 0.8 # Umbral de confianza para añadir a la 'sentence' (tu 'threshold' original)
+        threshold_prediction_consistency = 0.98 # Umbral de confianza para añadir a la 'sentence' (tu 'threshold' original)
         #frame_counter = 0 # Inicializar el contador de frames
         
         # --- NUEVA BANDERA PARA CONTROLAR EL FIN DE LA CAPTURA ---
@@ -123,10 +123,10 @@ def generate_frames():
                     sentence = sentence[-5:]
 
                 # Dibujar un rectángulo en la parte superior del frame para el texto de la predicción
-                cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
+                #cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
                 # Dibujar la "oración" de señas reconocidas
-                cv2.putText(image, ' '.join(sentence), (3,30),
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                #cv2.putText(image, ' '.join(sentence), (3,30),
+                           #cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
                # --- LÓGICA PARA EL FEEDBACK VISUAL BASADO EN recognition_complete ---
                 feedback_text = ""
@@ -180,6 +180,126 @@ def generate_frames():
 
     cap.release() # Libera los recursos de la cámara cuando el generador termina
     print("Captura de cámara finalizada debido a reconocimiento de seña.")
+    
+# FUNCION PARA COMPRENDO...
+def generate_frames_comprendo():
+    # Inicializa la captura de video desde la cámara (0 es la cámara por defecto)
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: No se pudo acceder a la cámara. Asegúrate de que no esté en uso.")
+        # Podrías enviar un frame de error o un mensaje al navegador aquí si lo deseas
+        return
+
+    # Inicializa el modelo Holistic de MediaPipe para el procesamiento en tiempo real
+    # Se usa un bloque 'with' para asegurar que los recursos de MediaPipe se liberen correctamente
+    with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+        sequence = [] # Lista para almacenar los keypoints de los últimos 30 frames
+        sentence = [] # Lista para almacenar las predicciones de señas confirmadas (la "oración")
+        predictions = [] # Lista para almacenar las últimas predicciones crudas del modelo
+        threshold_prediction_consistency = 0.8 # Umbral de confianza para añadir a la 'sentence' (tu 'threshold' original)
+        #frame_counter = 0 # Inicializar el contador de frames
+        
+        # --- NUEVA BANDERA PARA CONTROLAR EL FIN DE LA CAPTURA ---
+        recognition_complete = False 
+        
+        # Bucle principal para leer frames de la cámara
+        while True:
+            ret, frame = cap.read() # Lee un frame de la cámara
+            if not ret:
+                print("Error: No se pudo leer el frame de la cámara. Saliendo del stream.")
+                break # Sale del bucle si no se puede leer el frame
+
+            # Realizar la detección de MediaPipe utilizando la función importada
+            image, results = mediapipe_detection(frame, holistic)
+            #print(results)
+            
+            #dibujar landmarks
+            draw_changed_landmarks_box(image,results)
+
+            # Extraer keypoints del frame actual utilizando la función importada
+            image_shape = image.shape
+            keypoints = extract_keypoints_normalized(results,image_shape)
+            sequence.append(keypoints) # Añade los keypoints al buffer de secuencia
+            sequence = sequence[-30:] # Mantiene solo los últimos 30 frames (longitud de secuencia del modelo)
+
+            # Solo hacer predicciones si tenemos suficientes frames en la secuencia y el modelo está cargado
+            if len(sequence) == 30 and model is not None:
+                # Realiza la predicción del modelo
+                # np.expand_dims añade una dimensión de batch para que el modelo lo acepte
+                res = model.predict(np.expand_dims(sequence, axis=0))[0]
+                
+                # Obtiene el índice de la acción predicha con mayor probabilidad
+                predicted_action_index = np.argmax(res)
+                # Obtiene la probabilidad de esa acción predicha
+                predicted_action_prob = res[predicted_action_index]
+                # Obtiene el nombre de la acción predicha
+                predicted_action_name = actions[predicted_action_index]
+
+                predictions.append(predicted_action_index) # Guarda el índice de la predicción
+
+                # --- Lógica de visualización y feedback ---
+                # Lógica para gestionar la "sentence" (historial de predicciones consistentes)
+                # Si las últimas 8 predicciones son la misma seña Y la confianza es alta
+                if len(predictions) >= 4 and np.unique(predictions[-4:])[0] == predicted_action_index:
+                    if predicted_action_prob > threshold_prediction_consistency:
+                        # Si la "sentence" está vacía o la nueva seña es diferente a la última
+                        if len(sentence) == 0 or predicted_action_name != sentence[-1]:
+                            sentence.append(predicted_action_name)
+                            
+                            # --- NUEVA LÓGICA: DETENER SI SE RECONOCE "hola" ---
+                            if predicted_action_name == 'Comprendo': # O la seña específica que quieras
+                                recognition_complete = True # Activa la bandera para detener la captura
+                                print(f"¡Seña '{predicted_action_name}' reconocida! Deteniendo captura.")
+                            # --------------------------------------------------
+                
+                # Mantener la "sentence" con un máximo de 5 señas
+                if len(sentence) > 5:
+                    sentence = sentence[-5:]
+
+               # --- LÓGICA PARA EL FEEDBACK VISUAL BASADO EN recognition_complete ---
+                feedback_text = ""
+                feedback_color = (255, 255, 255) # Blanco por defecto
+
+                if recognition_complete: # Si la seña objetivo ha sido reconocida
+                    feedback_text = "BIEN HECHO! Sigue asi."
+                    feedback_color = (0, 255, 0) # Verde
+                else: # Si aún no se ha reconocido la seña objetivo
+                    feedback_text = "Intentalo de nuevo..."
+                    feedback_color = (0, 0, 255) # Rojo
+                
+                # Dibujar el texto de feedback en la parte inferior del frame
+                cv2.putText(image, feedback_text, (150, 450), # Posición (x,y) en el frame
+                           cv2.FONT_HERSHEY_SIMPLEX, 1, feedback_color, 2, cv2.LINE_AA)
+            
+            # --- LÓGICA PARA DETENER LA CAPTURA Y MOSTRAR MENSAJE FINAL ---
+            if recognition_complete:
+                # Opcional: Puedes dibujar un mensaje final en el frame antes de salir
+                final_message = "RECONOCIMIENTO DE COMPRENDO COMPLETADO"
+                text_size = cv2.getTextSize(final_message, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                text_x = (image.shape[1] - text_size[0]) // 2
+                text_y = (image.shape[0] + text_size[1]) // 2
+                cv2.putText(image, final_message, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA) # Verdec
+            
+                # Codificar y enviar el último frame con el mensaje final
+                ret, buffer = cv2.imencode('.jpg', image)
+                frame_bytes = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+                
+                # Romper el bucle principal
+                break 
+            # -------------------------------------------------------------
+
+            # Codificar el frame procesado como una imagen JPEG para el streaming
+            ret, buffer = cv2.imencode('.jpg', image)
+            frame_bytes = buffer.tobytes()
+
+            # Enviar el frame codificado al cliente como parte de un stream multipart
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+    cap.release() # Libera los recursos de la cámara cuando el generador termina
+    print("Captura de cámara finalizada debido a reconocimiento de seña.")
 
 # --- RUTAS DE FLASK ---
 # Define la ruta principal de la aplicación web (ej. http://127.0.0.1:5000/)
@@ -193,6 +313,15 @@ def index():
 def video_feed():
     #Esta ruta sirve el stream de video generado por la función generate_frames()
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/comprendo')
+def comprendo():
+    return render_template('comprendo.html')
+
+@app.route('/captacomprendo')
+def video_feed_comprendo():
+    #Esta ruta sirve el stream de video generado por la función generate_frames()
+    return Response(generate_frames_comprendo(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # --- EJECUTAR LA APLICACIÓN ---
 # Este bloque se ejecuta solo si el script se inicia directamente (no si se importa como módulo)
